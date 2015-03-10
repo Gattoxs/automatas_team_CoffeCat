@@ -1,0 +1,19 @@
+Autómatas PHP.
+
+Y -> w | wz
+W -> G
+W -> A,Y
+B -> ;
+E -> [
+F -> ]; | Z];
+G -> AF
+A -> Número | String | $variable | char
+S -> AB <--- Int
+S -> NM <--- mat
+S -> EW <--- arreglo
+SB
+Z -> enter
+OP -> + | - | / | *
+X -> OPN
+N -> Número
+M -> OPNB | OPNM
