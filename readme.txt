@@ -8,7 +8,7 @@ Funcion pareas:
       y retorna un 0/negativo
 
 Una vez teniendo nuestra lista creada la pasaremos a una lista global 'k'
-Empesaremos el recorrido de la lista 'k'
+Empesaremos el recorrido de la lista 'k' con un ciclo:
   revisando los token de cada nodo en un switch
     dependiendo el caso en el que entre evaluaremos de la siguiente manera
       
@@ -34,5 +34,7 @@ Empesaremos el recorrido de la lista 'k'
         si todo esto es positivo entonces:
           retrocedemos nuestra lista e iremos al ciclo de nuevo
         De lo contrario el programa nos arrojara el renglon, y cerca de que esta dicho error, despues termina el programa
+        
+Si no se encontro ningun error el programa nos desplejara un mensaje que todo salio bien.
         
     
