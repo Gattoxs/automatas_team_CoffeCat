@@ -1,4 +1,3 @@
-# automatas_team_CoffeCat
 #include<stdio.h>
 #include<windows.h>
 
@@ -170,6 +169,8 @@ void imprimirTokens(){
 	}
 }
 
+
+
 //_______________________Estructura de las palabras________________________________________________//
 struct milista
 {
@@ -177,37 +178,78 @@ struct milista
 	char dato[100];
 	int token;
 	struct milista *sig;
+	struct milista *ant;
 };
 
 typedef struct milista nodo;
 typedef nodo *tipo;
+tipo k=NULL;
+
+
+//_______________________	P	a	r	e	a ________________________________________________//
+
+int pareas (int ntoken){
+	if (ntoken==k->token){
+		k=k->sig;
+		return 1;
+		
+	}else{
+		printf("Error en la linea [%d] cerca de %s\n", k->renglon, k->dato);
+		//if(k-> token!=111)
+		//	printf("------     token= %d \n",k->token);
+	}
+	return 0;
+}
+
 
 //______________________ Imprimir ___________________________//
-void imprimir(tipo p){
+void imprimir(tipo *lista){
+	tipo p = *lista;
 	while(p != NULL){
 		printf("[%s, %d, %d]\n", p->dato, p->renglon, p->token);
 		p=p->sig;
 	}
 }
 
+//______________________ Imprimir Variables PHP____________________//
+void imprimirVar(tipo *lista){
+	tipo p = *lista;
+	while(p != NULL){
+		if(p->token == 309)
+				printf("[%s%s, %d, %d]\n", p->dato,p->sig->dato, p->renglon, p->token);
+			else {
+				printf("");
+				goto error;
+			}
+		p=p->sig;
+	}
+	if(0){
+	error:
+	system("cls");
+	printf("(!)Se encontro un error, lo cual llevo a que el programa cerrara (!)\nLinea [%d], despues de %s", p->renglon, p->dato);
+}
+}
+
+
 //____________________ Insertar ___________________________//
 
 void insertar(tipo *lista, int x, char pala[100], int token){
-	tipo n, p=*lista;
+	tipo n, p = *lista;
 	n=(nodo *)malloc(sizeof(nodo));
 	n->renglon = x+1;
 	n->token = token;
 	strcpy(n->dato, pala);
 	n->sig = NULL;
-	
-	if(*lista == NULL)
+	n->ant = NULL;
+		if(*lista == NULL)
 		*lista = n;
 	else
 		{
 			while(p->sig != NULL)
 				p=p->sig;
 				p->sig = n;
-		}	
+				n->ant = p;
+		}		
 	
 }
 //____________________ Asignar token ____________________//
@@ -233,11 +275,11 @@ void guardar(tipo *lista, FILE *Archivo, char res[118][20]){
 	int x,y, i=0;
 	bool ex=true;
 	
-printf("Archivo original: \n");	
-	while(!feof(Archivo)){
-		fputc(fgetc(Archivo), stdout);
-	}
-printf("\n\nSeparado en: \n");
+//printf("Archivo original: \n");	
+//	while(!feof(Archivo)){
+//		fputc(fgetc(Archivo), stdout);
+//	}
+//printf("\n\nSeparado en: \n");
 rewind(Archivo);	
 	x = fgetc(Archivo);
 	pala[0] = 0;
@@ -336,6 +378,8 @@ rewind(Archivo);
 			z = x;
 			a[0] = z;
 			a[1] = 0;
+			if(x == 97 | x == 98 | x == 99 | x == 100 | x == 101 | x == 102 | x == 103 | x == 104 | x == 105 | x == 106 | x == 107 | x == 108 | x == 109 | x == 110 | x == 111 | x == 112 | x == 113 | x == 114 | x == 115 | x == 116 | x == 117 | x == 118 | x == 119 | x == 120 | x == 121 | x == 122 | x == 65 |x == 66 |x == 67 |x == 68 |x == 69 |x == 70 |x == 71 |x == 72 |x == 73 |x == 74 |x == 75 |x == 76 |x == 77 |x == 78 |x == 79 |x == 80 |x == 81 |x == 82 |x == 83 |x == 84 |x == 85 |x == 86 |x == 87 |x == 89 |x == 90)
+			{
 			while(x != 9 && x != 32 && x != 61 && x != 45 && x != 43 && x != 47 && x != 34 && x != 59  && x != 58  && x != 123  && x != 125  && x != 91  && x != 94  && x != 40){
 				z = x;
 				a[0] = z;
@@ -345,6 +389,8 @@ rewind(Archivo);
 			}	
 			insertar(&*lista, i, pala, 310);
 			pala[0] = 0;
+			}
+			
 			goto back;
 		}
 			
@@ -382,15 +428,49 @@ main(){
 	char res[36][20] = {"?", "^", "'", "=", ">", "<", "(", ")",";", ":", ",", "[", "]", "{", "}", "+", "-", "*", "/", "!", "||", "&&", "!=", "==", ">=", "<=", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
 	int i=0;
 	
-	printf("\n\n\n TOKENS\n__________________________\n");
-    imprimirTokens();
+	//printf("\n\n\n TOKENS\n__________________________\n");
+
 	Reservadas = fopen("palabras reservadas.txt", "r");
 	//Reservadas_As_Array(Reservadas);
 	Archivo = fopen("BD.php", "r");
 	guardar(&lista, Archivo, res);
-	
-    printf("\n\n__________________________\n");
-	imprimir(lista);
-	
-
+	k = lista;
+    //printf("\n\n__________________________\n");
+	//imprimir(&lista);
+	//if(k == NULL)
+	//printf("NULA\n\n");
+				
+		while(k != NULL){
+			switch(k->token){
+		
+				case 309:														//$
+					k=k->sig;
+					if(pareas(310) && pareas(9)){								//var;
+						k=k->ant;
+						goto A;
+					}		
+					else
+						goto B;	
+				    break;
+				    
+				case 317:													   //echo 
+					k=k->sig;
+					if(pareas(34) && pareas(308) && pareas(34) && pareas(9)){  //"STRING";
+						k=k->ant;
+						goto A;
+					}		
+					else
+						goto B;	
+				    break;
+			}
+			A:
+			k=k->sig;
+		}
+printf("El codigo esta escrito de manera adecuada\n");
+		
+B:
+system("pause");
 }
+
+
+
