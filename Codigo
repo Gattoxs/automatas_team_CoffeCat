@@ -1,9 +1,9 @@
 #include<stdio.h>
 #include<windows.h>
-#include"Pilas.h"
-#include"Tokens.h"
-#include"Estructura.h"
+#include"Funciones.h"
 #include"Ordenar.h"
+
+
 //_______________________	P	a	r	e	a ________________________________________________//
 
 int pareas (int ntoken){
@@ -48,17 +48,25 @@ main(){
 	subs[0] = 0;
 	int i=0;
 	tipopila salida = NULL, aux = NULL;
-	char par[5][5];
-	
+	char par[5][5], postf[50][100];
+	for(;i<50;i++)
+	postf[i][0] = '\0';	
+	i=0;
 	par[0][0] = 42; par[0][1] = 0; // * 
 	par[1][0] = 47; par[1][1] = 0; // /
 	par[2][0] = 40; par[2][1] = 0; // (
 	par[3][0] = 41; par[3][1] = 0; // )
 	
 	Reservadas = fopen("palabras reservadas.txt", "r");
-	Archivo = fopen("../expmath.php", "r");
+	Archivo = fopen("BD.php", "r");
 	guardar(&lista, Archivo, res);
 	k = lista;
+	
+
+	if(ex == false){
+		
+		return 0;
+	}
 				
 		while(k != NULL){
 			
@@ -79,99 +87,15 @@ main(){
 								goto A;
 							else
 								goto B;
+						}else{
+							ExpMath(postf[ipa]);
+								
 						}
 						system("cls");	
 								
-						//ExpMath	POSTFIJA
-						while(k->token != 9){ 					
-							
-							if(k->token == 306){  		    //Si es # 
-								meterpila(&salida, k->dato);//Lo metemos a la salida	
-							}
-							else							//De lo contrario
-								if(k->token == 14 || k->token == 15 || k->token == 16 || k->token == 17 || k->token == 4 || k->token == 5){//Si es op(+ - / *)	
-									
-									
-									switch(k->token){
-										case 14:						// Suma 
-										case 15:						// Resta
-											meterpila(&aux, k->dato);	           // Lo metemos a la pila auxiliar
-											break;	
-										case 16:					   // Multiplicacion
-										case 17:		      		   // te amo gatito <3.<3 Divicion
-									 
-											if(aux == NULL){					   // Si la pila aux esta vacia
-												meterpila(&aux, k->dato);		   // Lo metemos directo a la pila
-												
-											}else{								   // De lo contrario
-															
- 												while(aux != NULL){				   // Sacamos los valores de la pila aux y los metemos a la salida hasta que encuentre un * / ( o este vacia aux 
-												 if(strcmp(aux->info, par[0]) == 0 || strcmp(aux->info, par[1]) == 0 || strcmp(aux->info, par[2]) == 0) //Si es '*' '/' '('
-												 {goto next;}               	   // Al encontrar un * / ( en la pila saldra del ciclo y se ira a la etiqueta next	
-												
-													strcpy(subs, sacarpila(&aux)); // Le asignamos a la variable 'subs' el valor primer valor de la pila aux y lo borramos de la pila
-													meterpila(&salida, subs);	   // Lo metemos a la salida
-													subs[0] = 0;				   // Limpiamos la variable subs
-												 	
-												 }
-												 
-												next:								// Etiqueta next
-												meterpila(&aux, k->dato); 			// Metemos el dato a la pila aux ya sea / o *
-												subs[0] = 0;	 					// Limpiamos la variable subs
-											}
-											
-											break;
-										
-										case 4:						// parentecis (
-											meterpila(&aux, k->dato);			    // Lo metemos directo a la pila auxiliar
-											
-											break;
-										case 5:					    // Parentecis )
-											
-											while(strcmp(aux->info, par[2]) != 0){ // Comparamos si es un (
-												if(aux == NULL)					   // Si no se encuentra el ( y la pila auz esta vacia ya, no llevara a la etiqueta ERR (error)
-													goto ERR;					
-															
-												subs[0] = 0;					   // Limpiamos la variable subs
-												strcpy(subs, sacarpila(&aux));	   // Le asignamos a la variable 'subs' el valor primer valor de la pila aux y lo borramos de la pila
-												meterpila(&salida, subs);          // Lo metemos a la salida
-												
-												if(strcmp(aux->info, par[2]) == 0){// Si el primer valor de la pila aux es igual a ( entonces
-													sacarpila(&aux);			   // Lo sacamos y eliminamos de la pila
-												break;							   // Terminamos el caso '5'
-												}
-											}
-											
-											break;
-											
-										default:
-											break;
-										
-									}														
-								}
-									
-								else{
-									system("cls");
-									ERR: 											// Etiqueta para los errores dentro del switch
-									printf("Error en la linea %d cerca de %s\n", k->renglon, k->dato);
-									goto B;											// Termina el programa
-									
-								}
-	
-						k=k->sig;									// Avanzamos al siguiente dato
 						
-							if(k->token == 9){						// Si es ; 
-							system("cls");							// Limpiamos los errores que nos asignaron los pareas del caso si fuera string
-							
-								while(aux != NULL){					// Sacamos todos los valores que se encuentren en la pila aux 	
-								strcpy(subs, sacarpila(&aux));		// Le asignamos a la variable 'subs' el valor primer valor de la pila aux y lo borramos de la pila
-								meterpila(&salida, subs);			// Lo metemos a la salida
-								subs[0] = 0;						// Limpiamos la variable subs
-												 	
-								}
-								imprimirpila(salida); printf("\n");	// (Opcional) Imprimimos la pila de salida
-							}
-						}
+						
+						
 						
 						k=k->ant; 
 						goto A;
@@ -183,7 +107,186 @@ main(){
 					
 				   	goto B;
 				    break;
-				    
+				
+				
+				case 302:					
+													// if
+					k=k->sig;  //Avanzamos al parentesis
+					
+					if(pareas(4)){							  //If is a ( 
+						
+						If:									  // Label 'if' for cicle to repeat still the condition ends  
+						
+						ExpMath(postf[ipa]);				  //Calling the ExpMath function, return a string with 'postfija'
+						//printf("%s\n", postf[ipa-1]); 
+						//system("pause");
+						if(k->token == 1 || k->token == 2 || k->token == 3 || k->token == 279 || k->token == 280){ //Logic Operators
+							
+							k=k->sig;						  // GetNextValue
+							if(k->token == 3)   pareas(3);    // ==
+							if(k->token == 279) pareas(279);  // ||
+							if(k->token == 280) pareas(280);  // &&
+							
+							goto If;						  //Go to lable 'If' because after a logic operator 'ahuevo' next an expMath
+						}else																						//else Is not a logic operator
+							if(k->token == 5){				  //Could it be a ) ? (To close tue condition of the current if function)
+								goto A;					      //then goto next value of the main list
+							}else							  //Is not a ) ? so print error and terminate the program
+								{
+									printf("ERROR");
+									goto B;
+								}		
+							
+					}else{									  // Is not a (? so print error and terminate the program
+						printf("Error");
+						goto B;
+					}
+					
+				break; 
+				
+				case 321:														// for
+						k=k->sig;  //Avanzamos al parentesis
+					if(pareas(4)){
+			// DECLARACION
+						if(k->token == 309){
+							k=k->sig;
+							if(k->token == 310){
+								k=k->sig;
+								if(k->token == 3){
+									k = k->sig;
+									ExpMath(postf[ipa]);
+									printf("%s\n", postf[ipa-1]); 
+							    	system("pause");
+							    	
+									if(k->token == 9){
+								
+										goto confor;
+									}
+										
+									else{
+									
+										goto B;
+									}
+									
+								}else{
+									if(k->token == 9){
+											
+								goto confor;
+									}
+									
+										
+									else{
+					
+										goto B;
+									}
+										
+								}
+								
+								
+							}else{
+								
+								goto B;
+							}
+							
+							
+							
+						}else{
+			//CONDICION
+							confor:
+									
+							pareas(9);
+							
+								ConditionFor:									  // Label 'ConditionFor' for cicle to repeat still the condition ends  
+						
+								ExpMath(postf[ipa]);				  //Calling the ExpMath function, return a string with 'postfija'
+							    //printf("%s\n",postf[ipa-1]); 
+								//system("pause");	
+								if(k->token == 1 || k->token == 2 || k->token == 3 || k->token == 279 || k->token == 280){ //Logic Operators
+									
+									k=k->sig;						  // GetNextValue
+									if(k->token == 3)   pareas(3);    // ==
+									if(k->token == 279) pareas(279);  // ||
+									if(k->token == 280) pareas(280);  // &&
+									
+									goto ConditionFor;						  //Go to lable 'ConditionFor' because after a logic operator 'ahuevo' next an expMath
+								}else								  //else Is not a logic operator
+									if(pareas(9)){				          //Could it be a ; ? (To continue with the for statements)
+			// OPERACION
+										if(pareas(309) && pareas (310) && pareas(5)) // $var)
+										{
+											k=k->ant;
+											goto A;
+										}
+										
+										k=k->ant;k=k->ant;k=k->ant;
+										if(pareas(309) && pareas (310) && pareas(3)) // $var = expmath) 
+											{
+												ExpMath(postf[ipa]);
+												if(pareas(5)){
+													k=k->ant;
+													goto A;
+												}
+												else
+													goto B;
+											}
+											
+										k=k->ant;k=k->ant;k=k->ant;
+										if(pareas(5)){                            // ;) Without increment
+											k=k->ant;
+											goto A;
+										}
+										else
+											goto B;												
+										
+										
+									}else							      //Is not a ) ? so print error and terminate the program
+										{
+											printf("\nERROR");
+											goto B;
+										}
+							
+							
+						}
+						
+					}else{
+						printf("Error");
+					}
+					
+				break;    
+				
+				case 319:														// while
+						k=k->sig;  //Avanzamos al parentesis
+					if(pareas(4)){
+							iWhile:							  // Label 'iWhile' for cicle to repeat still the condition ends  
+						
+						ExpMath(postf[ipa]);				  //Calling the ExpMath function, return a string with 'postfija' 
+						if(k->token == 1 || k->token == 2 || k->token == 3 || k->token == 279 || k->token == 280){ //Logic Operators
+							
+							k=k->sig;						  // GetNextValue
+							if(k->token == 3)   pareas(3);    // ==
+							if(k->token == 279) pareas(279);  // ||
+							if(k->token == 280) pareas(280);  // &&
+							
+							goto iWhile;				      //Go to lable 'iWhile' because after a logic operator 'ahuevo' next an expMath
+						}else																						//else Is not a logic operator
+							if(k->token == 5){				  //Could it be a ) ? (To close tue condition of the current if function)
+								goto A;						  //then goto next value of the main list
+							}else							  //Is not a ) ? so print error and terminate the program
+								{
+									printf("ERROR");
+									goto B;
+								}
+						
+					}else{
+						printf("Error");
+					}
+					
+				break; 
+				
+			
+				
+
+				
 				case 317:													   //echo 
 					k=k->sig;
 					if(pareas(34) && pareas(308) && pareas(34) && pareas(9)){  //"STRING";
@@ -201,7 +304,8 @@ main(){
 			k=k->sig;
 
 		}
-printf("El codigo esta escrito de manera adecuada\n");
+imprimir(&lista);
+//printf("El codigo esta escrito de manera adecuada\n");
 		
 B:
 system("pause");
