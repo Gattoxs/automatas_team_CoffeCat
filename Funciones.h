@@ -26,7 +26,7 @@ char *ExpMath(char *postfija){
 	
 	
 		
-	while(k->token != 9 && k->token != 1 && k->token != 2 && k->token != 3 && k->token != 5){ 					
+	while(k->token != 9 && k->token != 1 && k->token != 2 && k->token != 3 && k->token != 5 && k->token != 18 && k->token != 19){ 					
 		start:
 
 		if(k->token == 306 || k->token == 309){  		        // Si es # || $var
