@@ -1,3 +1,11 @@
+Se compila en Dev C++
+En algun otro compilador es muy propable que marque errores las funciones:
+system("pause");
+system("cls");
+
+Se esta trabajando en su correcion para uso general.
+
+
 Funcion pareas:
   Con parametro para recibir el token que deba de seguir y comparar si es el mismo en el que estamos
     si lo es:
