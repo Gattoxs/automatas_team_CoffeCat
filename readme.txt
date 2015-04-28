@@ -1,3 +1,10 @@
+El codigo esta programado en el copilador Dev C++
+En algunos otros compiladores es muy probable que marque error en las funciones
+system("pause");
+system("cls");
+
+Se estra trabajando en su correcion para uso general.
+
 Funcion pareas:
   Con parametro para recibir el token que deba de seguir y comparar si es el mismo en el que estamos
     si lo es:
