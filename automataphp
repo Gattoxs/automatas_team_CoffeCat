@@ -1,5 +1,26 @@
-Autómatas PHP.
+Autómatas.
 
+//declaracion
+		 (1)		   (2)
+tipo -> nombre -> ; -> FIN
+||			   -> = -> asignacion -> , -> (1) || ; -> (2)
+||			   -> , -> nombre -> (1) 
+
+
+* if
+	if -> ( -> expmath -> operador logico -> expmath )
+
+
+* for
+			|	      DECLARACION              |                 CONDICION                |            OPERACION
+	for -> ( -> variable -> = -> asignacion -> ; -> expmath -> operador logico -> expmath ; -> variable -> = -> asignacion -> ) -> FIN
+||			 -> ; -> (CONDICION)															-> ) -> FIN
+
+* while
+	while -> ( -> expmath -> operador logico -> expmath )
+
+
+* EXP MATH
 Y -> w | wz
 W -> G
 W -> A,Y
