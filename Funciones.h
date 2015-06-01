@@ -1,6 +1,34 @@
 #include"Pilas.h"
 #include"Tokens.h"
 #include"Estructura.h"
+//_______________________	P	a	r	e	a ________________________________________________//
+
+int parea(int ntoken){
+	if(ntoken==k->token)
+		return 1;
+	else
+		return 0;
+}
+
+int pareas (int ntoken){
+	if (ntoken==k->token){
+		k=k->sig;
+		return 1;
+		
+	}else{
+		printf("Error en la linea [%d] cerca de %s\n", k->renglon, k->dato);
+		//if(k-> token!=111)
+		//	printf("------     token= %d \n",k->token);
+	}
+	return 0;
+}
+
+// ERROR
+int error(char *msj){
+	system("cls");
+	printf("Error en la linea %d cerca de '%s' \n%s\n", k->renglon, k->dato, msj);
+	return 0;
+}
 
 //ExpMath	POSTFIJA
 int ipa=0;
@@ -18,36 +46,50 @@ char *ExpMath(char *postfija){
 	
 	// Error
 	//Falta agregar el token de las funciones
-	if(k->token != 15 && k->token != 14 && k->token != 4 && k->token != 306 && k->token != 36 && k->token != 309){
-
+	//             +                 -                 (                var               #
+	if(k->token != 13 && k->token != 16 && k->token != 4 && k->token != 87 && k->token != 89){
 		goto ERR;
 	}
 	
 	
 	
-		
-	while(k->token != 9 && k->token != 1 && k->token != 2 && k->token != 3 && k->token != 5 && k->token != 18 && k->token != 19){ 					
+    //                ;                >                 <                 =                 )  	          |                 &	              ,
+	while(k->token != 9 && k->token != 30 && k->token != 28 && k->token != 26 && k->token != 5 && k->token != 32 && k->token != 37 && k->token != 10 ){ 					
 		start:
 
-		if(k->token == 306 || k->token == 309){  		        // Si es # || $var
-			if(k->token == 309){
-				meterpila(&salida, k->dato);                    // Metemos $
-				k=k->sig;
+		if(k->token == 89 || k->token == 87){  		        // Si es # || $var
+		
+			if(k->token==87){ //If the next token its variable, 
+				
+ 				if(!varcmp(k->dato)){ //If the variables was declared
+ 				
+					if(vartype(k->dato)!=89){ // if the variables is diferent of char type
+						//Continue
+						goto continues;
+					}else{
+						
+						goto ERR;
+					}
+				}else{
+					
+					goto ERR;
+				}
 			}
+				continues:
 			meterpila(&salida, k->dato);                        // Lo metemos a la salida # o var	
-			
 		}
 		else							//De lo contrario
-			if(k->token == 14 || k->token == 15 || k->token == 16 || k->token == 17 || k->token == 4 || k->token == 5){//if is op(+ - / *)	
+			//             +                 -                 *                 /                 (                )
+			if(k->token == 13 || k->token == 16 || k->token == 20 || k->token == 22 || k->token == 4 || k->token == 5){//if is op(+ - / *)	
 				
 				
 				switch(k->token){
-					case 14:						// Sum 
-					case 15:						// Rest
+					case 13:						// Sum 
+					case 16:						// Rest
 						meterpila(&aux, k->dato);	           // Withdraw in aux
 						break;	
-					case 16:					   // Multiplication
-					case 17:		      		   // te amo gatito <3.<3 Divicion
+					case 20:					   // Multiplication
+					case 22:		      		   // te amo gatito <3.<3 Divicion
 				 
 						if(aux == NULL){					   // If aux is NULL
 							meterpila(&aux, k->dato);		   // Lo metemos directo a la pila
@@ -109,15 +151,13 @@ char *ExpMath(char *postfija){
 			}
 	
 	k=k->sig;									// Avanzamos al siguiente dato
-		if(k->token == 5){
-			k=k->sig;	
-			if(k->token == 14 || k->token == 15 || k->token == 16 || k->token == 17 || k->token == 4 || k->token == 5){
-				k=k->ant;
-				goto start;
+		if(k->token == 5){						// )
+			k=k->sig;							// sig dato
+			if(k->token == 13 || k->token == 16 || k->token == 20 || k->token == 22 || k->token == 4 || k->token == 5){
+				k=k->ant;						// if the exp math continue, return to )
+				goto start;						
 			}
-				
-
-			k=k->ant;
+			k=k->ant;							
 		}
 			
 	
