@@ -104,8 +104,100 @@ void imprimirFunciones(tipoFuncion *lista){
 	}
 }
 
+//_______________________Estructura de los tipos de datos________________________________________________//
+struct typelista
+{
+	int  renglon;
+	char variableName[100];
+	char value[100];
+	int  token;
+	int called;
+	struct typelista *sig;
+	struct typelista *ant;
+};
+
+typedef struct typelista typenodo;
+typedef typenodo *typelist;
+typelist types=NULL;
+
+//____________________ Insertar ___________________________//
+
+void insertarType(typelist *lista, int x, char name[100], int token, char value[100]){
+	typelist n, p = *lista;
+	n=(typenodo *)malloc(sizeof(typenodo));
+	n->renglon = x+1;
+	n->token = token;
+	n->called = 0;
+	strcpy(n->variableName, name);
+	strcpy(n->value, value);
+	n->sig = NULL;
+	n->ant = NULL;
+		if(*lista == NULL)
+		*lista = n;
+	else
+		{
+			while(p->sig != NULL)
+				p=p->sig;
+				p->sig = n;
+				n->ant = p;
+		}		
+	
+}
 
 
+//______________________ Imprimir ___________________________//
+void imprimirTypes(typelist *lista){
+	typelist p = *lista;
+	while(p != NULL){
+		printf("[(%d) %s = %s, %d]\n", p->token, p->variableName, p->value, p->renglon);
+		p=p->sig;
+	}
+}
+
+//_______________________   V   A   R   C   M   P ____________________________________________//
+
+//This function compare the given variable's name with the rest of declared variables before. If the variable's name is already used the function will return 0, else return 1
+int varcmp(char *var){
+	typelist s = types;
+
+	while(s){
+		if(strcmp(var, s->variableName) == 0){		
+			return 0;
+		}
+		s = s->sig;
+	}
+	return 1;
+}
+
+int vartype(char *var){
+	typelist s = types;
+
+	while(s){
+		if(strcmp(var, s->variableName) == 0){		
+			return s->token;
+		}
+		s = s->sig;
+	}
+	return 0;
+}
+
+int decvarcmp(char *var){
+	typelist s = types;
+
+//This functions indicate the number of variables' declared
+	while(s){									//End while end of the variables list
+		if(strcmp(var, s->variableName) == 0){	//Check if the variable name are in the variable list
+			s->called++;						//Aument the number of calleds of variable
+			if(s->called > 1)					//If called are more than 1, so the variable was declared before
+				return 0;
+			else 								//Else, this variable wasn't declared or are declaring
+				return 1;
+		}
+		s = s->sig;
+	}
+	return 1;
+}
+			
 
 
 
