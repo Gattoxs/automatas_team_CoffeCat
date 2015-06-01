@@ -3,113 +3,222 @@
 #include"Funciones.h"
 #include"Ordenar.h"
 
-
-//_______________________	P	a	r	e	a ________________________________________________//
-
-int pareas (int ntoken){
-	if (ntoken==k->token){
-		k=k->sig;
-		return 1;
-		
-	}else{
-		printf("Error en la linea [%d] cerca de %s\n", k->renglon, k->dato);
-		//if(k-> token!=111)
-		//	printf("------     token= %d \n",k->token);
-	}
-	return 0;
-}
-
-
-//______________________ Imprimir Variables PHP____________________//
-void imprimirVar(tipo *lista){
-	tipo p = *lista;
-	while(p != NULL){
-		if(p->token == 309)
-				printf("[%s%s, %d, %d]\n", p->dato,p->sig->dato, p->renglon, p->token);
-			else {
-				printf("");
-				goto error;
-			}
-		p=p->sig;
-	}
-	if(0){
-	error:
-	system("cls");
-	printf("(!)Se encontro un error, lo cual llevo a que el programa cerrara (!)\nLinea [%d], despues de %s", p->renglon, p->dato);
-}
-}
-
 main(){
-	
 	tipo lista=NULL;
-	FILE *Archivo, *Reservadas;
-	char res[36][20] = {"?", "^", "'", "=", ">", "<", "(", ")",";", ":", ",", "[", "]", "{", "}", "+", "-", "*", "/", "!", "||", "&&", "!=", "==", ">=", "<=", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
-	char subs[100];
-	subs[0] = 0;
-	int i=0;
+	FILE *Archivo;
+	char par[5][5], postf[50][100], subs[100]; subs[0] = 0;
 	tipopila salida = NULL, aux = NULL;
-	char par[5][5], postf[50][100];
-	for(;i<50;i++)
-	postf[i][0] = '\0';	
-	i=0;
+	int i=0;
+	for(i=0;i<50;i++)	postf[i][0] = '\0';	i=0;
 	par[0][0] = 42; par[0][1] = 0; // * 
 	par[1][0] = 47; par[1][1] = 0; // /
 	par[2][0] = 40; par[2][1] = 0; // (
 	par[3][0] = 41; par[3][1] = 0; // )
 	
-	Reservadas = fopen("palabras reservadas.txt", "r");
-	Archivo = fopen("BD.php", "r");
-	guardar(&lista, Archivo, res);
+	// Opening the code source
+	Archivo = fopen("source.c", "r");
+	
+	guardar(&lista, Archivo);
+
 	k = lista;
 	
 
-	if(ex == false){
-		
-		return 0;
+	if(!ex){
+		return 0;	
 	}
 				
 		while(k != NULL){
 			
 			switch(k->token){
 
-				case 309:      //Al momento de encontrar una variable '$'	
-			        k=k->sig;  //Avanzamos al nombre 
+				case 53:      //Declaration of variable(s) INT, Float
+			    case 52:
+				    k=k->sig;  //Avanzamos al nombre 
 					
-					//$var;
-					if(pareas(310) && pareas(9)){ k=k->ant; goto A;} k=k->ant;
-					system("cls");
-					
-					//$var = "String" || $var = ExpMath;
-					if(pareas(310) && pareas(3)){ 
-			 
-						if(pareas(34)){ //$var = "String"
-							if(pareas(308) && pareas(34) && pareas(9))
-								goto A;
-							else
-								goto B;
-						}else{
-							ExpMath(postf[ipa]);
-								
+					//TIPO variable
+					if(parea(87)){ 
+						checkvar:
+						//Check if the variable it's available
+						if(!decvarcmp(k->dato)){
+							return error("This variable was declared before.");
 						}
-						system("cls");	
-								
+						k=k->sig;
 						
+						//TIPO Variable;
+						if(parea(9)){
+							goto A;
+						}
 						
-						
-						
-						k=k->ant; 
-						goto A;
-						
-						
-					} 
+						if(parea(26)){ // =
+							
+							k=k->sig;
+							ExpMath(postf[ipa]);
+							//printf("%s", k->dato); system("pause");
+							if(parea(9)){
+								goto A;
+							}
+							if(parea(10)){
+								k=k->sig;
+								goto checkvar;
+							}else{
+								return error("Valor de asignacion");
+							}	
+						}
+				
+						if(parea(10)){ // ,
+							k=k->sig;
+							goto checkvar;
+						}
+							
+						//If the declaration its not equal to 'type var;' 'type var = exp;' 'type var1, var2,...,varn;' 	
+						return error("A '=' or ',' was expected.");
+					}else{
+						return error("A variable name was expected");
+					}
 					
-					k=k->ant;
-					
-				   	goto B;
 				    break;
+				    
+				case 51: //char
+				    k=k->sig;  //Avanzamos al nombre 
+					
+					//TIPO variable
+					if(parea(87)){ 
+						checkcharvar:
+						//Check if the variable it's available
+						
+						if(!decvarcmp(k->dato)){
+							return error("This variable was declared before.");
+						}
+						k=k->sig;
+						
+						//TIPO Variable;
+						if(parea(9)){
+							goto A;
+						}
+						
+						if(parea(26)){ // =
+								k=k->sig;
+								
+							if(parea(12)){ //"
+								k=k->sig;
+								if(parea(88)){ // STRING
+									k=k->sig;
+									
+									if(parea(12)){ // "
+										k=k->sig;
+										
+										if(parea(9)){ // ;
+											goto A;	
+										}
+										
+										if(parea(10)){ // ,
+											k=k->sig;
+											goto checkcharvar;
+										}else{
+											return error("Syntax error on char declaration. Expected ';' or ',' ");
+										}
+									}
+								}
+							}
+						}
+						
+						if(parea(10)){ //,
+							k=k->sig;
+							goto checkcharvar;
+						}
+						
+					}else{
+						return error("A variable name was expected");
+					}
+					
+				break;
 				
+				case 87:
+					
+					if(!varcmp(k->dato)){ //check if the variable exist
+						
+						
+						if(!decvarcmp(k->dato)){ //Check if the variable was declared before
+							switch(vartype(k->dato)){ //Check variable type
+								case 89: // STRING
+									k=k->sig;
+									if(parea(26)){ // =
+										k=k->sig;
+										if(parea(87)){
+									
+											if(!varcmp(k->dato)){
+												if(vartype(k->dato) == 89){
+													k=k->sig;
+													if(parea(9)){
+														goto A;
+													}else{
+														return error("Syntax error on char declaration. Expected ';'");
+													}
+												}else{
+												return error("Unconpatible variable. Expected a variable type Char.");
+												}
+												
+											}else{
+												return error("Undeclared variable .");
+											}
+										}
+										
+										if(parea(12)){ //"
+											k=k->sig;
+											if(parea(88)){ // STRING
+												k=k->sig;
+												if(parea(12)){ // "
+													k=k->sig;
+													if(parea(9)){ // ;
+														goto A;	
+													}else{
+														return error("Syntax error on char declaration. Expected ';'");
+													}
+												}
+											}
+										}
+										
+									}
+									
+								break;
+								case 91:
+								case 90: // Variable type INT FLOAT
+									if(varcmp(k->dato) == 0 && vartype(k->dato) == 90 || vartype(k->dato) == 91){ //Verificate if the variable exist
+										k=k->sig;
+										
+										if(parea(26)){ // =
+											k = k->sig;
+											ExpMath(postf[ipa]);
+											
+											if(parea(9)){ // ;
+												goto A;
+											}else{
+												return error("Syntax error. Value not compatible or ';' ");
+											}
+										}else{
+											if(parea(9)){ // ;
+												goto A;
+											}else{
+												return error("Syntax error. Expeted ';' a");
+											}
+										}
+									}else{
+										
+										return error("Undeclared variable Or Invalid type");
+									}									
+								break;
+								
+							}
+						}else{
+							return error("Undeclared variable.");
+						}
+					}else{
+						return error("Undeclared variable.");
+					}
+					
+				break;
 				
-				case 302:					
+				case 39:					
 													// if
 					k=k->sig;  //Avanzamos al parentesis
 					
@@ -120,195 +229,207 @@ main(){
 						ExpMath(postf[ipa]);				  //Calling the ExpMath function, return a string with 'postfija'
 						//printf("%s\n", postf[ipa-1]); 
 						//system("pause");
-						if(k->token == 1 || k->token == 2 || k->token == 3 || k->token == 279 || k->token == 280){ //Logic Operators
+						if(k->token == 28 || k->token == 30 || k->token == 26 || k->token == 34 || k->token == 37){ //Logic Operators
 							
 							k=k->sig;						  // GetNextValue
-							if(k->token == 3)   pareas(3);    // ==
-							if(k->token == 279) pareas(279);  // ||
-							if(k->token == 280) pareas(280);  // &&
+							if(k->token == 26) pareas(26);    // ==
+							if(k->token == 34) pareas(34);  // ||
+							if(k->token == 37) pareas(37);  // &&
 							
 							goto If;						  //Go to lable 'If' because after a logic operator 'ahuevo' next an expMath
 						}else																						//else Is not a logic operator
-							if(k->token == 5){				  //Could it be a ) ? (To close tue condition of the current if function)
+							if(k->token == 5){				  //Could it be a ) ? (To close the condition of the current if function)
 								goto A;					      //then goto next value of the main list
 							}else							  //Is not a ) ? so print error and terminate the program
 								{
-									printf("ERROR");
-									goto B;
+									return error("Syntax error for 'if' function. Expected ')' to close the condition");
 								}		
 							
 					}else{									  // Is not a (? so print error and terminate the program
-						printf("Error");
-						goto B;
+						return error("Syntax error for 'if' function. Expected '(' to open the condition");
 					}
 					
 				break; 
 				
-				case 321:														// for
-						k=k->sig;  //Avanzamos al parentesis
-					if(pareas(4)){
-			// DECLARACION
-						if(k->token == 309){
-							k=k->sig;
-							if(k->token == 310){
-								k=k->sig;
-								if(k->token == 3){
-									k = k->sig;
-									ExpMath(postf[ipa]);
-									printf("%s\n", postf[ipa-1]); 
-							    	system("pause");
-							    	
-									if(k->token == 9){
+				case 46:	// FOR
+						k=k->sig;  //go to next token
+					if(pareas(4)){ // (?
+					// DECLARACION
+						if(parea(9))
+							goto confor;
+							
+						if(parea(87)){ 
+							forcheckvar:
 								
-										goto confor;
-									}
-										
-									else{
-									
-										goto B;
-									}
-									
+							//Check if the variable it's available
+							if(varcmp(k->dato)){													//Check if the variable exist in the list
+								if(!decvarcmp(k->dato)){											//Check if the variable was declared before
+									if(vartype(k->dato) != 52 || vartype(k->dato) != 53 )			//Check if the type of the variable is numeric
+										return error("Undeclared variable in 'for' function.");
 								}else{
-									if(k->token == 9){
-											
-								goto confor;
-									}
-									
-										
-									else{
-					
-										goto B;
-									}
-										
+									return error("Undeclared variable.");
 								}
-								
-								
+								k=k->sig;
 							}else{
-								
-								goto B;
+								return error("Undeclared variable");
+							}	
+							
+							
+							//for(Variable;
+							if(parea(9)){
+								goto confor;
 							}
 							
-							
+							if(parea(26)){ // =
+								k=k->sig;
+								ExpMath(postf[ipa]);
+								
+								if(parea(10)) // ,
+									goto forcheckvar;
+								
+								if(parea(9)){ // ;
+									goto confor;
+								}else{
+									return error("Syntax error on declaration section of 'for' function.");
+								}	
+							}
+					
+							if(parea(10)){ // ,
+								k=k->sig;
+								goto forcheckvar;
+							}else{
+								return error("Syntax error on declaration section of 'for' function.");
+							}			
 							
 						}else{
-			//CONDICION
-							confor:
-									
-							pareas(9);
-							
-								ConditionFor:									  // Label 'ConditionFor' for cicle to repeat still the condition ends  
-						
-								ExpMath(postf[ipa]);				  //Calling the ExpMath function, return a string with 'postfija'
-							    //printf("%s\n",postf[ipa-1]); 
-								//system("pause");	
-								if(k->token == 1 || k->token == 2 || k->token == 3 || k->token == 279 || k->token == 280){ //Logic Operators
-									
-									k=k->sig;						  // GetNextValue
-									if(k->token == 3)   pareas(3);    // ==
-									if(k->token == 279) pareas(279);  // ||
-									if(k->token == 280) pareas(280);  // &&
-									
-									goto ConditionFor;						  //Go to lable 'ConditionFor' because after a logic operator 'ahuevo' next an expMath
-								}else								  //else Is not a logic operator
-									if(pareas(9)){				          //Could it be a ; ? (To continue with the for statements)
-			// OPERACION
-										if(pareas(309) && pareas (310) && pareas(5)) // $var)
-										{
-											k=k->ant;
-											goto A;
-										}
-										
-										k=k->ant;k=k->ant;k=k->ant;
-										if(pareas(309) && pareas (310) && pareas(3)) // $var = expmath) 
-											{
-												ExpMath(postf[ipa]);
-												if(pareas(5)){
-													k=k->ant;
-													goto A;
-												}
-												else
-													goto B;
-											}
-											
-										k=k->ant;k=k->ant;k=k->ant;
-										if(pareas(5)){                            // ;) Without increment
-											k=k->ant;
-											goto A;
-										}
-										else
-											goto B;												
-										
-										
-									}else							      //Is not a ) ? so print error and terminate the program
-										{
-											printf("\nERROR");
-											goto B;
-										}
-							
-							
+							return error("Syntax error on declaration section of 'for' function. Expected 'variable' or ';'");	
 						}
-						
+							
+							
+					//CONDICION
+						confor:
+							
+						if(parea(9))
+							k=k->sig;
+						else
+							return error("Syntax error on 'for' funtcion");
+							
+							ConditionFor:						  // Label 'ConditionFor' for cicle to repeat still the condition ends  
+					
+							ExpMath(postf[ipa]);				  //Calling the ExpMath function, return a string with 'postfija'
+						    //printf("%s\n",postf[ipa-1]); 
+							//system("pause");	
+							if(k->token == 28 || k->token == 30 || k->token == 26 || k->token == 34 || k->token == 37){ //Logic Operators
+							
+							k=k->sig;						  // GetNextValue
+							if(k->token == 26) pareas(26);    // ==
+							if(k->token == 34) pareas(34);    // ||
+							if(k->token == 37) pareas(37);    // &&
+								
+								goto ConditionFor;						  //Go to lable 'ConditionFor' because after a logic operator 'ahuevo' next an expMath
+							}else								  //else Is not a logic operator
+								if(parea(9)){				          //Could it be a ; ? (To continue with the for statements)
+					// OPERACION	
+									k=k->sig;
+									if(parea(87))
+									{
+										//Check if the variable it's available
+										if(varcmp(k->dato)){													//Check if the variable exist in the list
+											if(!decvarcmp(k->dato)){											//Check if the variable was declared before
+												if(vartype(k->dato) != 52 || vartype(k->dato) != 53 )			//Check if the type of the variable is numeric
+													return error("Only numeric variables can be used here.");
+											}else{
+												return error("Undeclared variable.");
+											}
+											k=k->sig;
+										}else{
+											return error("Undeclared variable");
+										}
+										
+										if(parea(26)){
+											k=k->sig;
+											ExpMath(postf[ipa]);
+										}										
+									}
+									
+									if(parea(5)){ // if end with )
+										goto A;
+									}else{
+										return error("Error in 'for' function. Expected ')' to close the parameters of the function.");
+									}
+																			
+								}else{							      //Is a ; ?
+										return error("Condition error on 'for' function. Expected logic operator or ';'");
+								}
+							
+							
 					}else{
-						printf("Error");
+						return error("Expected '(' for parameters of 'for' function");
 					}
 					
 				break;    
 				
-				case 319:														// while
+				
+				case 45:	 	// while
 						k=k->sig;  //Avanzamos al parentesis
-					if(pareas(4)){
-							iWhile:							  // Label 'iWhile' for cicle to repeat still the condition ends  
+				if(pareas(4)){							  //If is a ( 
 						
-						ExpMath(postf[ipa]);				  //Calling the ExpMath function, return a string with 'postfija' 
-						if(k->token == 1 || k->token == 2 || k->token == 3 || k->token == 279 || k->token == 280){ //Logic Operators
+						iwhile:									  // Label 'if' for cicle to repeat still the condition ends  
+						
+						ExpMath(postf[ipa]);				  //Calling the ExpMath function, return a string with 'postfija'
+						if(k->token == 28 || k->token == 30 || k->token == 26 || k->token == 34 || k->token == 37){ //Logic Operators
 							
 							k=k->sig;						  // GetNextValue
-							if(k->token == 3)   pareas(3);    // ==
-							if(k->token == 279) pareas(279);  // ||
-							if(k->token == 280) pareas(280);  // &&
+							if(k->token == 26) pareas(26);    // ==
+							if(k->token == 34) pareas(34);  // ||
+							if(k->token == 37) pareas(37);  // &&
 							
-							goto iWhile;				      //Go to lable 'iWhile' because after a logic operator 'ahuevo' next an expMath
+							goto iwhile;						  //Go to lable 'If' because after a logic operator 'ahuevo' next an expMath
 						}else																						//else Is not a logic operator
-							if(k->token == 5){				  //Could it be a ) ? (To close tue condition of the current if function)
-								goto A;						  //then goto next value of the main list
-							}else							  //Is not a ) ? so print error and terminate the program
-								{
-									printf("ERROR");
-									goto B;
-								}
-						
-					}else{
-						printf("Error");
-					}
+							if(k->token == 5){				  //Could it be a ) ? (To close the condition of the current if function)
+								goto A;					      //then goto next value of the main list
+							}else{							  //Is not a ) ? so print error and terminate the program
+								return error("Syntax error for 'if' function. Expected ')' to close the condition");
+							}		
+							
+				}else{									  // Is not a (? so print error and terminate the program
+						return error("Syntax error for 'if' function. Expected '(' to open the condition");
+				}
 					
 				break; 
 				
 			
-				
-
-				
-				case 317:													   //echo 
+				case 60:	                    //printf 
 					k=k->sig;
-					if(pareas(34) && pareas(308) && pareas(34) && pareas(9)){  //"STRING";
-						k=k->ant;
-						goto A;
-					}		
-					else
-						goto B;	
-				    break;
-
-				    
-				    
+					if(parea(4)){					//(
+						k=k->sig;
+						if(parea(34)){              // "
+							k=k->sig;
+							if(parea(88)){         //STRING
+								k=k->sig;
+								if(parea(34)){     // "
+									k=k->sig;
+									if(parea(5)){   // )
+										k=k->sig;									
+										if(parea(9)){  // ;
+											goto A;
+										}else return error("Syntax error in 'printf' function. Expected ';'");
+									}else return error("Syntax error in 'printf' function. Expected ')' ");
+								}else return error("Syntax error in 'printf' function. Expected '' ");
+							}else return error("Syntax error in 'printf' function. Expected an String value'");
+						}else return error("Syntax error in 'printf' function. Expected '' ");		
+					}else return error("Syntax error in 'printf' function. Expected '(' ");	
+				break;
 			}
 			A:
 			k=k->sig;
 
 		}
 imprimir(&lista);
-//printf("El codigo esta escrito de manera adecuada\n");
+printf("El codigo esta escrito de manera adecuada\n");
 		
 B:
-system("pause");
+getchar();
 }
 
 
