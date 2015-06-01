@@ -3,168 +3,99 @@ typedef struct {
   int token;
   }Asig_Tok;
   Asig_Tok atoken[]={
-  	{"php", 257}, 
-  	{"require_once", 258}, 
-	{"require", 259}, 
-	{"eval", 260}, 
-	{"include_once", 261}, 
-	{"include", 262}, 
-	{"or", 263}, 
-	{"xor", 264}, 
-	{"and", 265}, 
-	{"print", 266}, 
-	{"yield", 267}, 
-	{">", 1},
-	{"<", 2},
-	{"=", 3},
-	{"(", 4},
-	{")", 5},
-	{"{", 6},
-	{"}", 7},
-	{":", 8},
-	{";", 9},
-	{"[", 10},
-	{"]", 11},
-	{"?", 12},
-	{"!", 13},
-	{"+", 14},
-	{"-", 15},
-	{"*", 16},
-	{"/", 17},
-	{">>=", 268}, 
-	{"<<=", 269}, 
-	{"^=", 270}, 
-	{"|=", 271}, 
-	{"&=", 272}, 
-	{"%=", 273}, 
-	{"CONCAEQUAL", 274}, 
-	{"/=", 275}, 
-	{"*=", 276}, 
-	{"-=", 277}, 
-	{"+=", 278}, 
-	{"||", 279}, 
-	{"&&", 280}, 
-	{"!==", 281}, 
-	{"===", 282}, 
-	{"!=", 283}, 
-	{"<>", 283},  
-	{"==", 284}, 
-	{">=", 285}, 
-	{"<=", 286}, 
-	{">>", 287}, 
-	{"<<", 288}, 
-	{"instanceof", 289}, 
-	{"unset", 290}, 
-	{"bool", 291}, 
-	{"object", 292}, 
-	{"array", 293}, 
-	{"string", 294}, 
-	{"double", 295}, 
-	{"int", 296}, 
-	{"--", 297}, 
-	{"++", 298}, 
-	{"clone", 299}, 
-	{"new", 300}, 
-	{"exit", 301}, 
-	{"if", 302}, 
-	{"elseif", 303}, 
-	{"else", 304}, 
-	{"endif", 305}, 
-	{"1", 306},  
-	{"2", 306},  
-	{"3", 306},  
-	{"4", 306},  
-	{"5", 306},  
-	{"6", 306},  
-	{"7", 306},  
-	{"8", 306},  
-	{"9", 306},  
-	{"0", 306}, 
-	{"DNUMBER", 307}, 
-	{"string", 308}, 
-	{"${a", 309}, 
-	{"VARIABLE", 310}, 
-	{"num_string", 311}, 
-	{"inline_html", 312}, 
-	{"character", 313}, 
-	{"BAD_CHARACTER", 314}, 
-	{"ENCAPSED_AND_WHITESPACE", 315}, 
-	{"CONSTANT_ENCAPSED_STRING", 316}, 
-	{"echo", 317}, 
-	{"do", 318}, 
-	{"while", 319}, 
-	{"endwhile", 320}, 
-	{"for", 321}, 
-	{"endfor", 322}, 
-	{"foreach", 323}, 
-	{"endforeach", 324}, 
-	{"declare", 325}, 
-	{"enddeclare", 326}, 
-	{"as", 327}, 
-	{"switch", 328}, 
-	{"endswitch", 329}, 
-	{"case", 330}, 
-	{"default", 331}, 
-	{"break", 332}, 
-	{"continue", 333}, 
-	{"goto", 334}, 
-	{"function", 335}, 
-	{"const", 336}, 
-	{"return", 337}, 
-	{"try", 338}, 
-	{"catch", 339}, 
-	{"finally", 340}, 
-	{"throw", 341}, 
-	{"use", 342}, 
-	{"INSTEADOF", 343}, 
-	{"global", 344}, 
-	{"public", 345}, 
-	{"protected", 346}, 
-	{"private", 347}, 
-	{"final", 348}, 
-	{"abstract", 349}, 
-	{"static", 350}, 
-	{"var", 351}, 
-	{"unset", 352}, 
-	{"isset", 353}, 
-	{"empty", 354}, 
-	{"HALT_COMPILER", 355}, 
-	{"class", 356}, 
-	{"trait", 357}, 
-	{"interface", 358}, 
-	{"extends", 359}, 
-	{"implements", 360}, 
-	{"OBJECT_OPERATOR", 361}, 
-	{"DOUBLE_ARROW", 362}, 
-	{"LIST", 363}, 
-	{"array", 364}, 
-	{"callable", 365}, 
-	{"class", 366}, 
-	{"TRAIT_C", 367}, 
-	{"METHOD_C", 368}, 
-	{"FUNC_C", 369}, 
-	{"line", 370}, 
-	{"file", 371}, 
-	{"comment", 372}, 
-	{"DOC_COMMENT", 373}, 
-	{"OPEN_TAG", 374}, 
-	{"OPEN_TAG_WITH_ECHO", 375}, 
-	{"CLOSE_TAG", 376}, 
-	{"whitespace", 377}, 
-	{"START_HEREDOC", 378}, 
-	{"END_HEREDOC", 379}, 
-	{"DOLLAR_OPEN_CURLY_BRACES", 380}, 
-	{"CURLY_OPEN", 381}, 
-	{"DOUBLE_COLON", 382}, 
-	{"namespace", 383}, 
-	{"NS_C", 384}, 
-	{"dir", 385}, 
-	{"NS_SEPARATOR", 386}
+		{"{",0},
+        {"}",1},
+        {"[",2},
+        {"]",3},
+        {"(",4},
+        {")",5},
+		{"\\",6}, //
+        {".",7},
+		{":",8},
+		{";",9},
+		{",",10},
+        {"\'",11},
+		{"\"",12},
+        {"+",13},
+		{"++",14}, //
+		{"+=",15}, //
+		{"-",16},
+		{"--",17}, //
+		{"-=",18}, //
+		{"->",19}, //
+		{"*",20},
+		{"*=",21}, //
+		{"/",22},
+		{"/=",23}, //
+		{"%",24},
+		{"%=",25}, //
+		{"=",26},
+		{"==",27}, //
+		{"<",28},
+		{"<=",29}, //
+		{">",30},
+		{">=",31}, //
+        {"!",32},
+		{"!=",33}, //
+		{"|",34},
+		{"||",35}, //
+        {"&&",36}, //
+		{"&",37},
+		{"#",38},
+		{"if",39},
+		{"else",40},
+		{"switch",41},
+		{"case",42},
+        {"break",43},
+		{"do",44},
+		{"while",45},
+		{"for",46},
+		{"define",47},
+        {"include",48},
+		{"return",49},
+		{"default",50},
+		
+		{"char",51},
+		{"int",52},
+        {"float",53},
+        {"double",54},
+		{"const",55},
+		{"long",56},
+        {"void",57},
+        {"struct",58},
+		
+		{"clrscr",59},
+		{"printf",60},
+		{"cprintf",61},
+		{"textcolor",62},
+		{"textbackground",63},
+		{"flushall",64},
+		{"scanf",65},
+		{"getch",66},
+		{"getche",67},
+		{"pow",68},
+		{"sin",69},
+		{"cos",70},
+        {"tan",71},
+		{"sqrt",72},
+		{"gotoxy",73},
+		{"short",74},
+		{"strcpy",75},
+		{"main",86},
 };
+// [99] DONT EXIST TOKEN
+// 87 Variable name
+// 88 String
+// 89 String value (Token for variables names) All numerics value
+// 90 Numeric Values (Token for variables names) int
+// 91 Float numeric value (Token for variables names) float
+// 92 double numeric value (Token for variables names) double
+
+
 
 void imprimirTokens(){
 	int i;
-	for(i=0;i < 129;i++){
+	for(i=0;i < 76;i++){
 		printf("{%s, %d}\n",atoken[i].carc, atoken[i].token);
 	}
 }
@@ -173,13 +104,12 @@ void imprimirTokens(){
 
 int AToken(char palabra[100]){
 int x = 0;
-	while(x < 128){
-		//printf("\nPalabra: %s, palTOken: %s", palabra, atoken[x].carc);
+	while(x < 77){
+		//printf("\nPalabra: %s, palTOken: %s", palabra, atoken[x].carc); system("pause");
 		if(strcmp(atoken[x].carc, palabra) == 0){
-			
 			return atoken[x].token;
 		}
 		x = x + 1;
 	}
-	return 85;
+	return 87;
 }	
